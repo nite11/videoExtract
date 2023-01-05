@@ -1,23 +1,59 @@
-# import the necessary packages
-import cv2
-import math 
+# Compare an image with every frame of a video to find the best match
+
 import os
+import operator
+import cv2
+from skimage import color
+from skimage.metrics import structural_similarity as ssim
 
-count = 0
 
-cap = cv2.VideoCapture("video\Sumida.mp4")   # capturing the video from the given path
-frameRate = cap.get(5) # propID 5 : FPS Frame rate.
-print(frameRate)
-#cap.open()
-while(cap.isOpened()):
-    frameId = cap.get(1) # propId=1: index of the frame to be captured next
-    #print(frameId)
-    ret, frame = cap.read() # return True if frame is read correctly
-    if (ret != True):
-        break
-    if (frameId % math.floor(frameRate) == 0):
-        filename ="frame%d.jpg" %count;count+=1
-        cv2.imwrite(os.path.join("frames", filename), frame)
-#cap.release()
-#print(cap.isOpened())
-print ("Done!")
+def parse_video(image,imgName):
+    #iterate through video frames
+    similarities = []
+    
+    
+    frame_count = -1
+
+    for f in os.listdir("frames"): 
+        #increment frame counter
+        frame_count += 1
+        #resize current video frame
+        small_frame = cv2.imread("frames\\"+f)
+        small_frame = cv2.resize(small_frame, (10, 10))
+        #convert to greyscale
+        small_frame_bw = color.rgb2gray(small_frame)
+
+        #compare current frame to source image
+        similarity = ssim(image, small_frame_bw, gaussian_weights=True, sigma=1.5, use_sample_covariance=False, data_range=255)
+
+        similarities.append([imgName,f,similarity])
+
+
+        
+
+
+        
+        
+        #sort similarities list
+        #similarities = sorted(similarities, key=operator.itemgetter('similarity'), reverse=True)
+
+    similarities.sort(key=lambda a: a[2])     
+
+    return similarities
+
+def main():    
+    for f in os.listdir("tags") :
+        img = cv2.imread("tags\\"+f)
+        #shrink
+        img = cv2.resize(img, (10, 10))
+        #convert to b&w
+        img = color.rgb2gray(img)
+        print(parse_video(img,f))
+
+if __name__ == '__main__':
+    main()
+
+
+
+    
+
