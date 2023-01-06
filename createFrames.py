@@ -4,7 +4,6 @@ import math
 import os
 
 count = 0
-
 cap = cv2.VideoCapture("video\Sumida.mp4")   # capturing the video from the given path
 frameRate = cap.get(5) # propID 5 : FPS Frame rate.
 print(frameRate)
@@ -20,4 +19,3 @@ while(cap.isOpened()):
         cv2.imwrite(os.path.join("frames", filename), frame)
 #cap.release()
 #print(cap.isOpened())
-print ("Done!")

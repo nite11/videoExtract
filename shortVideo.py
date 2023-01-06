@@ -9,27 +9,29 @@ position=[]
 with open('frameInfo.txt','r') as f:
     lines=f.readlines() 
 for line in lines:
-    position.append(int(re.sub("\D", "", line)))
+    position.append(int(re.sub("\D", "", line)))  #to get the frame number which is equivalent 
+                                                    #to seconds from start of the video
 
 position.sort()
 
+#to consolidate all the positions within 5 seconds of each other into a single position
 i=0
 while i<len(position)-1:
     if position[i]+5>position[i+1]:
         position.pop(i+1)
-        #print(position)
     else:
         i+=1
-#print(position)
+
 
 
 # loading video dsa gfg intro video
 clip = VideoFileClip("video\Sumida.mp4")
 clips=[]
 
+#cutting 10 second subclips from 5 seconds before the position to 5 seconds after the position.
+#further code has to be written here to handle, for example, if first or last frame of the video is tagged
 for j in range(len(position)):
-    #print(position[j]+5)
-    clips.append(clip.subclip(position[j]-5, position[j]+5))  #write code for clip from start or end of video
+    clips.append(clip.subclip(position[j]-5, position[j]+5))  
 
 # concatenating both the clips
 final = concatenate_videoclips(clips)
