@@ -1,0 +1,4 @@
+frame61.jpg,cnc
+frame62.jpg,soldering
+frame8.jpg,cnc
+frame9.jpg,cnc
